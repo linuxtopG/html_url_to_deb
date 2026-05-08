@@ -1,6 +1,5 @@
 ![git](https://github.com/linuxtopG/html_url_to_deb/blob/main/htod.jpg)
 
-
 # WebApp Converter
 
 Convert any URL or HTML/CSS/JS directory into a **standalone Linux desktop application** with embedded Chromium (Qt 6 WebEngine). The generated app is a real native binary — not a wrapper script — and can be packaged as a `.deb` for distribution.
@@ -28,22 +27,22 @@ Convert any URL or HTML/CSS/JS directory into a **standalone Linux desktop appli
 
 ---
 
-## Debian / Ubuntu install lib 
+## Debian / Ubuntu
 
-### 
+###  (webapp-converter)
 
 ```bash
 sudo apt update
 sudo apt install -y build-essential cmake qt6-base-dev
 ```
 
-###  (generated apps)
+### (generated apps)
 
 ```bash
 sudo apt install -y qt6-webengine-dev libqt6printsupport6
 ```
 
-### All in one 
+### 
 
 ```bash
 sudo apt update
@@ -57,8 +56,8 @@ sudo apt install -y build-essential cmake qt6-base-dev qt6-webengine-dev libqt6p
 ### 1. Build the converter
 
 ```bash
-git clone https://github.com/linuxtopG/html_url_to_deb.git
-cd html_url_to_deb
+git clone <repo-url> webapp-converter
+cd webapp-converter
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --parallel $(nproc)
@@ -109,6 +108,45 @@ Options:
   -h, --help           Show help
   -v, --version        Show version
 ```
+
+---
+
+## How to Structure Your Web Files (for `--dir` mode)
+
+When using `--dir ./my-web-app/`, all files in that directory are embedded into the final binary via Qt resources. The app loads them with the `qrc:///web/` scheme.
+
+### Rules
+
+```
+my-web-app/
+├── index.html          ✅ Entry point (loaded automatically)
+├── style.css           ✅ Linked via <link href="style.css">
+├── script.js           ✅ Linked via <script src="script.js">
+├── images/
+│   └── logo.png        ✅ Referenced as src="images/logo.png"
+├── pages/
+│   └── about.html      ✅ Accessed via window.location = "pages/about.html"
+└── subdir/
+    └── data.json       ✅ Fetch via fetch("subdir/data.json")
+```
+
+- **`index.html`** must exist at the root — it is the startup page.
+- **Relative paths work exactly as they would on a web server** — CSS, JS, images, fonts, and nested HTML files all resolve correctly.
+- **Internet access is enabled**, so CDN links (`<link>` to Google Fonts, `<script>` from CDN, API `fetch()` calls, etc.) work normally.
+- **External images / resources** on the web (e.g. `src="https://example.com/pic.jpg"`) load fine.
+- **Do NOT use absolute filesystem paths** like `file:///home/user/pic.jpg` — those will not work inside the resource bundle.
+
+### Bad example — will NOT work
+
+```
+my-web-app/
+├── index.html              ✅
+├── ../shared/style.css     ❌ Outside the source directory
+├── C:/Users/me/style.css   ❌ Absolute filesystem path
+└── <link href="/style.css"> ❌ Root-absolute path (not supported in qrc)
+```
+
+> Tip: Develop your web app locally in a browser first, then point `--dir` at the project folder. Everything that works in your browser with relative paths will work in the generated desktop app.
 
 ---
 
