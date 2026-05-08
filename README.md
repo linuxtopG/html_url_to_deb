@@ -28,22 +28,22 @@ Convert any URL or HTML/CSS/JS directory into a **standalone Linux desktop appli
 
 ---
 
-## Debian / Ubuntu — تثبيت جميع المكتبات المطلوبة
+## Debian / Ubuntu install lib 
 
-### لتشغيل الأداة (webapp-converter)
+### 
 
 ```bash
 sudo apt update
 sudo apt install -y build-essential cmake qt6-base-dev
 ```
 
-### لبناء التطبيقات المولّدة (generated apps)
+###  (generated apps)
 
 ```bash
 sudo apt install -y qt6-webengine-dev libqt6printsupport6
 ```
 
-### كامل الأمر مرة واحدة (كل ما تحتاجه)
+### All in one 
 
 ```bash
 sudo apt update
@@ -57,8 +57,8 @@ sudo apt install -y build-essential cmake qt6-base-dev qt6-webengine-dev libqt6p
 ### 1. Build the converter
 
 ```bash
-git clone <repo-url> webapp-converter
-cd webapp-converter
+git clone https://github.com/linuxtopG/html_url_to_deb.git
+cd html_url_to_deb
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --parallel $(nproc)
