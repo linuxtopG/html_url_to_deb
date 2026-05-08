@@ -56,8 +56,8 @@ sudo apt install -y build-essential cmake qt6-base-dev qt6-webengine-dev libqt6p
 ### 1. Build the converter
 
 ```bash
-git clone <repo-url> webapp-converter
-cd webapp-converter
+git clone https://github.com/linuxtopG/html_url_to_deb.git
+cd html_url_to_deb
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --parallel $(nproc)
